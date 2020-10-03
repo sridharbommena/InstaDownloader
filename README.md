@@ -2,11 +2,11 @@
 instadp
 it is a react native project
 
-usage :
+**usage :**
 
-open any instagram user profile
-copy the profile url.
-paste it in the textbox in this app
-click next
-click on the image
-the image will be downloaded to your device.
+open any instagram user profile \n
+copy the profile url.\n
+paste it in the textbox in this app\n
+click next\n
+click on the image\n
+the image will be downloaded to your device.\n
