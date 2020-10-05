@@ -130,7 +130,7 @@ const saveFile = async (fileUri) => {
 
         <TouchableOpacity style={{
           backgroundColor : "#29B6F6" ,
-          padding : height*0.025 ,
+          padding : height*0.022 ,
           borderRadius : height /10,
           }} onPress={() =>{ getData(link);} }   
         >
