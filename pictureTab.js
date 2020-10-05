@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity ,PermissionsAndroid } from 'react-native';
-import { StyleSheet, Text, TextInput, View , Dimensions, KeyboardAvoidingView, ScrollView, StatusBar  } from 'react-native';
+import { StyleSheet, Text,  View , Dimensions, KeyboardAvoidingView, ScrollView, StatusBar  } from 'react-native';
 import { Image, Input } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import { Overlay } from 'react-native-elements';
-import { FAB } from 'react-native-paper';
+import { FAB , TextInput } from 'react-native-paper';
 
 
 export default function pictureTab() {
@@ -79,11 +79,11 @@ const saveFile = async (fileUri) => {
            return null ;
        }
 
-      setFullName(json.graphql.shortcode_media.owner.username);
+      setFullName(json.graphql.shortcode_media.owner.full_name);
       setpictureURL(json.graphql.shortcode_media.display_url);
       setDownloadble(true);
       console.log(json.graphql.shortcode_media.display_url);
-      console.log(json.graphql.shortcode_media.owner.username);
+      console.log(json.graphql.shortcode_media.owner.full_name);
     } )
     .catch((error) => 
     {
@@ -115,7 +115,10 @@ const saveFile = async (fileUri) => {
           <Text style={styles.text} >Insta Downloader</Text>
           
         <View style={styles.InputContainer}>
-        <TextInput style={styles.textInput} value={link} onChangeText={text => setLink(text)}  />
+        <TextInput style={styles.textInput } label="Paste the link here"
+         value={link} mode="outlined"
+         theme={{ colors: { primary: 'grey',underlineColor:'transparent',}}}
+         onChangeText={text => setLink(text)}  />
         <TouchableOpacity style={{
           backgroundColor : "skyblue" ,
           padding : height*0.025 ,
@@ -190,12 +193,6 @@ const styles = StyleSheet.create({
   textInput : 
   {
     width : width * 0.7 ,
-    paddingVertical : height * 0.02 ,
-    borderWidth : 1,
-    fontSize  : height * 0.025,
-    borderRadius : 30,
-    paddingLeft : width * 0.07,
-    paddingRight :width * 0.07,
   },
   view : 
   {
