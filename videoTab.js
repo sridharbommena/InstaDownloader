@@ -8,24 +8,31 @@ import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import { Overlay } from 'react-native-elements';
-import { FAB  , TextInput } from 'react-native-paper';
-import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import pictureTab from './pictureTab';
-import videoTab from './videoTab';
-import { Feather } from '@expo/vector-icons';
+import { FAB , TextInput } from 'react-native-paper';
+import { Video } from 'expo-av';
+import { Ionicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 
-
-const Tab = createMaterialBottomTabNavigator();
-
-export const DpTab =() =>{
+export default function videoTab() {
   const [link , setLink] = useState("");
-  const [bio , setBio ] = useState("");
-  const [dpURL , setDpURL] = useState("");
+  const [videoURL , setvideoURL] = useState("");
   const [fullName , setFullName ] = useState("");
   const [loading , setLoading ] = useState(false);
   const [visible, setVisible] = useState(false);
   const [downloadble ,setDownloadble ] = useState(false);
+  const [isPlaying , setIsPlaying ] = useState(false);
+  const [isMute , setIsMute ] = useState(false);
+
+  const playOrPause = () =>{
+
+    setIsPlaying(!isPlaying);
+
+  }
+
+  const muteOrUnmute = () =>
+  {
+      setIsMute(!isMute);
+  }
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -34,11 +41,13 @@ export const DpTab =() =>{
   const downloadFile= () =>{
 
     toggleOverlay();
+    muteOrUnmute();
+    playOrPause();
 
-    const uri = dpURL;
-    var filename = fullName;
-    
-    let fileUri = FileSystem.documentDirectory + filename +".jpg";
+    const uri = videoURL;
+    var filename = fullName ;
+
+    let fileUri = FileSystem.documentDirectory + filename +".mp4";
     FileSystem.downloadAsync(uri, fileUri)
     .then(({ uri }) => {
         saveFile(uri);
@@ -64,11 +73,12 @@ const saveFile = async (fileUri) => {
   setLoading(true);
   //remove below line if any problem occurs
   setDownloadble(false);
-  
+  setIsMute(false);
+  setIsPlaying(false);
+
   value = value.trim();
   if(value)
   {
-    
     var newValue = "";
     const index = value.lastIndexOf("?");
     if(index != -1)
@@ -85,20 +95,18 @@ const saveFile = async (fileUri) => {
     await fetch(url)
     .then(response => response.json())
     .then( json => {
-      setBio(json.graphql.user.biography);
-      setFullName(json.graphql.user.full_name);
-      setDpURL(json.graphql.user.profile_pic_url_hd);
+
+      setFullName(json.graphql.shortcode_media.owner.full_name);
+      setvideoURL(json.graphql.shortcode_media.video_url);
       setDownloadble(true);
-      // console.log(json.graphql.user.biography);
-      // console.log(json.graphql.user.full_name);
-      // console.log(json.graphql.user.profile_pic_url_hd);
+      console.log(json.graphql.shortcode_media.video_url);
+      console.log(json.graphql.shortcode_media.owner.full_name);
     } )
     .catch((error) => 
     {
-      alert("Error : Invalid URL ");
+      alert("Error : Invalid URL or The account is private ");
 
-      setBio("");
-      setDpURL("");
+      setvideoURL("");
       setFullName("");
       setDownloadble(false);    
     });
@@ -106,14 +114,15 @@ const saveFile = async (fileUri) => {
   else
   {
     alert("Error : No URL entered ");
-    setBio("");
-    setDpURL("");
+
+    setvideoURL("");
     setFullName("");
 
     setDownloadble(false);
 
   }
   setLoading(false);
+
 }
 
   return (
@@ -127,7 +136,6 @@ const saveFile = async (fileUri) => {
          value={link} mode="outlined"
          theme={{ colors: { primary: 'grey',underlineColor:'transparent',}}}
          onChangeText={text => setLink(text)}  />
-
         <TouchableOpacity style={{
           backgroundColor : "#29B6F6" ,
           padding : height*0.025 ,
@@ -162,19 +170,76 @@ const saveFile = async (fileUri) => {
           
             <Text style={{fontSize: 25 , fontWeight : "bold" }}>{fullName}</Text>
           </View>
-          <View>
-            <Text style={{fontSize: 18}} >{bio}</Text>
+          <View style={{flex : 1 , flexDirection : "row" , justifyContent : "space-around" }} >
+          
+        {
+            downloadble ?
+            (   
+                <TouchableOpacity onPress={()=> playOrPause() } style={styles.accessBtn} >
+                {   isPlaying ?
+                    (
+                        <View style={{flex : 1 , flexDirection : "row" }}>
+                        <Ionicons name="md-pause" size={20} color="black" />
+                        <Text style={{paddingLeft : 10}} >Pause</Text>
+                        </View>
+                    )
+                    :
+                    
+                    (
+                        <View style={{flex : 1 , flexDirection : "row" }}>
+                        <Ionicons name="md-play" size={20} color="black" />
+                        <Text style={{paddingLeft : 10}} >Play</Text>
+                        </View>
+                    )
+                }       
+                </TouchableOpacity>
+            ):
+            null
+        }
+
+       {
+            downloadble ?
+            (   
+                  
+                <TouchableOpacity onPress={()=> muteOrUnmute() } style={styles.accessBtn} >
+                {   isMute ?
+                    (
+                        <View style={{flex : 1 , flexDirection : "row" }}>
+                        <Octicons name="unmute" size={20} color="black" />
+                        <Text style={{paddingLeft : 10}} >UnMute</Text>
+                        </View>
+                    )
+                    :
+                    
+                    (
+                        <View style={{flex : 1 , flexDirection : "row" }}>
+                        <Octicons name="mute" size={20} color="black" />
+                        <Text style={{paddingLeft : 10}} >Mute</Text>
+                        </View>
+                    )
+                }       
+                </TouchableOpacity>
+            ):
+            null
+        }
+        
           </View>
         </View>
 
+
+
         <View style={styles.ImageContainer} > 
-          
-        <Image
-        source={ dpURL? { uri: dpURL }: { uri:"https://www.bestofelectricals.com/images/default-image.png" }}
-        style={{ width: 350, height: 350 }}
-        resizeMode = "contain"
-        PlaceholderContent={<ActivityIndicator />}
-          />
+
+        <Video
+            source={{ uri: videoURL }}
+            rate={1.0}
+            volume={1.0}
+            isMuted={isMute}
+            resizeMode="contain"
+            shouldPlay={isPlaying}
+            style={{ width: 300, height: 300 }}
+        />
+
                  <FAB
             style={styles.fab}
             large
@@ -191,39 +256,6 @@ const saveFile = async (fileUri) => {
       </SafeAreaView>
     </View>
   );
-}
-
-const App = () =>
-{
-
-  return(
-      <NavigationContainer>
-        <Tab.Navigator shifting={true} keyboardHidesNavigationBar={true}  >
-          <Tab.Screen name="DpTab" component={DpTab}
-          options={{
-            tabBarLabel : "Dp" ,
-            tabBarColor : "#1E88E5",
-            tabBarIcon : ({color})=>(<AntDesign name="user" size={24} color={color} />),
-          }}
-          />
-          <Tab.Screen name="pictureTab" component={pictureTab} 
-          options={{
-            tabBarLabel : "Pictures",
-            tabBarColor : "#00897B",
-            tabBarIcon : ({color})=>(<AntDesign name="picture" size={24} color={color}/> ),
-          }}
-          />
-          <Tab.Screen name="videoTab" component={videoTab} 
-          options={{
-            tabBarLabel : "Videos",
-            tabBarColor : "#303030",
-            tabBarIcon : ({color})=>(<Feather name="video" size={24} color={color} /> ),
-          }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-  );
-
 }
 
 const height = Dimensions.get("screen").height;
@@ -279,7 +311,12 @@ const styles = StyleSheet.create({
     bottom: statusbarHeight * 3,
     backgroundColor : "#29B6F6"
   },
+  accessBtn : 
+  {
+    padding : 15 ,
+    backgroundColor : "#29B6F6",
+    marginHorizontal : 20 ,
+    paddingHorizontal : width *0.09 ,
+    borderRadius : 15
+  },
 });
-
-
-export default App;

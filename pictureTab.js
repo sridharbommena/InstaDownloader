@@ -54,6 +54,9 @@ const saveFile = async (fileUri) => {
   const getData = async(value) =>
 {
   setLoading(true);
+  //remove below line if any problem occurs
+  setDownloadble(false);
+
   value = value.trim();
   if(value)
   {
@@ -73,11 +76,6 @@ const saveFile = async (fileUri) => {
     await fetch(url)
     .then(response => response.json())
     .then( json => {
-        if (Object.keys(json).length === 0)
-       {
-           alert("Error: The account is private");
-           return null ;
-       }
 
       setFullName(json.graphql.shortcode_media.owner.full_name);
       setpictureURL(json.graphql.shortcode_media.display_url);
@@ -87,7 +85,7 @@ const saveFile = async (fileUri) => {
     } )
     .catch((error) => 
     {
-      alert("Error : Invalid URL ");
+      alert("Error : Invalid URL or The account is private ");
 
       setpictureURL("");
       setFullName("");
@@ -120,7 +118,7 @@ const saveFile = async (fileUri) => {
          theme={{ colors: { primary: 'grey',underlineColor:'transparent',}}}
          onChangeText={text => setLink(text)}  />
         <TouchableOpacity style={{
-          backgroundColor : "skyblue" ,
+          backgroundColor : "#29B6F6" ,
           padding : height*0.025 ,
           borderRadius : height /10,
           }} onPress={() =>{ getData(link);} }   
@@ -232,6 +230,6 @@ const styles = StyleSheet.create({
     margin: 10,
     right: 5,
     bottom: statusbarHeight * 3,
-    backgroundColor : "skyblue"
+    backgroundColor : "#29B6F6"
   },
 });
