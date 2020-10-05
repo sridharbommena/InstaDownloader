@@ -8,6 +8,9 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-navigation/material-bottom-tabs": "^5.2.18",
+    "@react-navigation/native": "^5.7.5",
     "expo": "~39.0.2",
     "expo-file-system": "~9.2.0",
     "expo-media-library": "~9.2.1",
@@ -18,7 +21,11 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
     "react-native-elements": "^2.3.2",
+    "react-native-gesture-handler": "^1.8.0",
     "react-native-paper": "^4.2.0",
+    "react-native-reanimated": "^1.13.1",
+    "react-native-safe-area-context": "^3.1.8",
+    "react-native-screens": "^2.11.0",
     "react-native-web": "~0.13.12",
     "rn-fetch-blob": "^0.12.0"
   },

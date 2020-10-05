@@ -9,17 +9,11 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 import { Overlay } from 'react-native-elements';
 import { FAB } from 'react-native-paper';
-import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import pictureTab from './pictureTab';
 
 
-const Tab = createMaterialBottomTabNavigator();
-
-export const DpTab =() =>{
+export default function pictureTab() {
   const [link , setLink] = useState("");
-  const [bio , setBio ] = useState("");
-  const [dpURL , setDpURL] = useState("");
+  const [pictureURL , setpictureURL] = useState("");
   const [fullName , setFullName ] = useState("");
   const [loading , setLoading ] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -33,11 +27,8 @@ export const DpTab =() =>{
 
     toggleOverlay();
 
-    const uri = dpURL;
-    var filename = "";
-    const index = link.lastIndexOf("com/");
-    const SecondIndex = link.lastIndexOf("?");
-      filename = link.slice(index+4 , SecondIndex);
+    const uri = pictureURL;
+    var filename = fullName ;
 
     let fileUri = FileSystem.documentDirectory + filename +".jpg";
     FileSystem.downloadAsync(uri, fileUri)
@@ -66,7 +57,6 @@ const saveFile = async (fileUri) => {
   value = value.trim();
   if(value)
   {
-    
     var newValue = "";
     const index = value.lastIndexOf("?");
     if(index != -1)
@@ -83,20 +73,23 @@ const saveFile = async (fileUri) => {
     await fetch(url)
     .then(response => response.json())
     .then( json => {
-      setBio(json.graphql.user.biography);
-      setFullName(json.graphql.user.full_name);
-      setDpURL(json.graphql.user.profile_pic_url_hd);
+        if (Object.keys(json).length === 0)
+       {
+           alert("Error: The account is private");
+           return null ;
+       }
+
+      setFullName(json.graphql.shortcode_media.owner.username);
+      setpictureURL(json.graphql.shortcode_media.display_url);
       setDownloadble(true);
-      // console.log(json.graphql.user.biography);
-      // console.log(json.graphql.user.full_name);
-      // console.log(json.graphql.user.profile_pic_url_hd);
+      console.log(json.graphql.shortcode_media.display_url);
+      console.log(json.graphql.shortcode_media.owner.username);
     } )
     .catch((error) => 
     {
       alert("Error : Invalid URL ");
 
-      setBio("");
-      setDpURL("");
+      setpictureURL("");
       setFullName("");
       setDownloadble(false);    
     });
@@ -104,8 +97,8 @@ const saveFile = async (fileUri) => {
   else
   {
     alert("Error : No URL entered ");
-    setBio("");
-    setDpURL("");
+
+    setpictureURL("");
     setFullName("");
 
     setDownloadble(false);
@@ -157,15 +150,12 @@ const saveFile = async (fileUri) => {
           
             <Text style={{fontSize: 25 , fontWeight : "bold" }}>{fullName}</Text>
           </View>
-          <View>
-            <Text style={{fontSize: 18}} >{bio}</Text>
-          </View>
         </View>
 
         <View style={styles.ImageContainer} > 
           
         <Image
-        source={ dpURL? { uri: dpURL }: { uri:"https://www.bestofelectricals.com/images/default-image.png" }}
+        source={ pictureURL? { uri: pictureURL }: { uri:"https://www.bestofelectricals.com/images/default-image.png" }}
         style={{ width: 350, height: 350 }}
         resizeMode = "contain"
         PlaceholderContent={<ActivityIndicator />}
@@ -186,31 +176,6 @@ const saveFile = async (fileUri) => {
       </SafeAreaView>
     </View>
   );
-}
-
-const App = () =>
-{
-
-  return(
-      <NavigationContainer>
-        <Tab.Navigator shifting={true} keyboardHidesNavigationBar={true}  >
-          <Tab.Screen name="DpTab" component={DpTab}
-          options={{
-            tabBarLabel : "Dp" ,
-            tabBarIcon : ({color})=>(<AntDesign name="user" size={24} color={color} />),
-          }}
-          />
-          <Tab.Screen name="pictureTab" component={pictureTab} 
-          options={{
-            tabBarLabel : "Pictures",
-            tabBarColor : "#E64A19",
-            tabBarIcon : ({color})=>(<AntDesign name="picture" size={24} color={color}/> ),
-          }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-  );
-
 }
 
 const height = Dimensions.get("screen").height;
@@ -273,6 +238,3 @@ const styles = StyleSheet.create({
     backgroundColor : "skyblue"
   },
 });
-
-
-export default App;
