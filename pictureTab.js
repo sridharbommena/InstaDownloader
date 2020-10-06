@@ -113,7 +113,7 @@ const saveFile = async (fileUri) => {
           <Text style={styles.text} >Insta Downloader</Text>
           
         <View style={styles.InputContainer}>
-        <TextInput style={styles.textInput } label="Paste the link here"
+        <TextInput style={styles.textInput } label="Paste your link here"
          value={link} mode="outlined"
          theme={{ colors: { primary: 'grey',underlineColor:'transparent',}}}
          onChangeText={text => setLink(text)}  />
@@ -157,7 +157,7 @@ const saveFile = async (fileUri) => {
           
         <Image
         source={ pictureURL? { uri: pictureURL }: { uri: null } }
-        style={{ width: height*0.55 , height: height*0.55  }}
+        style={{ width: width*0.9 , height: height*0.7  }}
         resizeMode = "contain"
         PlaceholderContent={<ActivityIndicator />}
           />
@@ -214,10 +214,12 @@ const styles = StyleSheet.create({
   text :
   {
     fontSize : 40 ,
-    fontWeight : "bold",
+    // fontWeight : "bold",
     color : "red",
     alignSelf : "center",
     marginBottom : statusbarHeight * 0.5,
+    fontFamily:"lobster" ,
+
   },
   downContainer : 
   {

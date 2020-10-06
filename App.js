@@ -15,6 +15,9 @@ import pictureTab from './pictureTab';
 import videoTab from './videoTab';
 import { Feather } from '@expo/vector-icons';
 
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -120,10 +123,10 @@ const saveFile = async (fileUri) => {
     <View style={styles.container}>
       <SafeAreaView style={styles.view} >
         <ScrollView>
-          <Text style={styles.text} >Insta Downloader</Text>
+          <Text style={styles.text } >Insta Downloader</Text>
           
         <View style={styles.InputContainer}>
-        <TextInput style={styles.textInput } label="Paste the link here"
+        <TextInput style={styles.textInput } label="Paste your link here"
          value={link} mode="outlined"
          theme={{ colors: { primary: 'grey',underlineColor:'transparent',}}}
          onChangeText={text => setLink(text)}  />
@@ -171,7 +174,7 @@ const saveFile = async (fileUri) => {
           
         <Image
         source={ dpURL? { uri: dpURL }: { uri: null }}
-        style={{ width: height*0.52 , height: height*0.52 }}
+        style={{ width: width*0.95 , height: width*0.95 }}
         resizeMode = "contain"
         PlaceholderContent={<ActivityIndicator />}
           />
@@ -195,16 +198,37 @@ const saveFile = async (fileUri) => {
 
 const App = () =>
 {
+  const [fontLoaded , setFontLoaded ] = useState(false);
+
+  const fetchFonts = () => {
+    return Font.loadAsync({
+    'lobster': require('./fonts/Lobster-Regular.ttf'),
+    });
+    };
+
+    if(!fontLoaded)
+    {
+      return(
+        <AppLoading 
+        startAsync={fetchFonts}
+        onFinish = {() => setFontLoaded(true)}
+        />
+      );
+    }
+
+
 
   return(
       <NavigationContainer>
         <Tab.Navigator shifting={true} keyboardHidesNavigationBar={true} backBehavior="initialRoute"
+         
          >
           <Tab.Screen name="DpTab" component={DpTab}
           options={{
             tabBarLabel : "Dp" ,
             tabBarColor : "#1E88E5",
             tabBarIcon : ({color})=>(<AntDesign name="user" size={24} color={color} />),
+            
           }}
           />
           <Tab.Screen name="pictureTab" component={pictureTab} 
@@ -262,10 +286,11 @@ const styles = StyleSheet.create({
   text :
   {
     fontSize : 40 ,
-    fontWeight : "bold",
+    // fontWeight : "bold",
     color : "red",
     alignSelf : "center",
     marginBottom : statusbarHeight * 0.5,
+    fontFamily:"lobster" ,
   },
   downContainer : 
   {
