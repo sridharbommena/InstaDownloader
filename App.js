@@ -170,8 +170,8 @@ const saveFile = async (fileUri) => {
         <View style={styles.ImageContainer} > 
           
         <Image
-        source={ dpURL? { uri: dpURL }: { uri:"https://www.bestofelectricals.com/images/default-image.png" }}
-        style={{ width: 350, height: 350 }}
+        source={ dpURL? { uri: dpURL }: { uri: null }}
+        style={{ width: height*0.52 , height: height*0.52 }}
         resizeMode = "contain"
         PlaceholderContent={<ActivityIndicator />}
           />
@@ -198,7 +198,8 @@ const App = () =>
 
   return(
       <NavigationContainer>
-        <Tab.Navigator shifting={true} keyboardHidesNavigationBar={true}  >
+        <Tab.Navigator shifting={true} keyboardHidesNavigationBar={true} backBehavior="initialRoute"
+         >
           <Tab.Screen name="DpTab" component={DpTab}
           options={{
             tabBarLabel : "Dp" ,

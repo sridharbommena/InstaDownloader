@@ -237,7 +237,7 @@ const saveFile = async (fileUri) => {
             isMuted={isMute}
             resizeMode="contain"
             shouldPlay={isPlaying}
-            style={{ width: 300, height: 300 }}
+            style={{ width: height * 0.55 , height: height * 0.65 }}
         />
 
                  <FAB

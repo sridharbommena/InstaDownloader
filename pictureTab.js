@@ -156,8 +156,8 @@ const saveFile = async (fileUri) => {
         <View style={styles.ImageContainer} > 
           
         <Image
-        source={ pictureURL? { uri: pictureURL }: { uri:"https://www.bestofelectricals.com/images/default-image.png" }}
-        style={{ width: 350, height: 350 }}
+        source={ pictureURL? { uri: pictureURL }: { uri: null } }
+        style={{ width: height*0.55 , height: height*0.55  }}
         resizeMode = "contain"
         PlaceholderContent={<ActivityIndicator />}
           />
@@ -230,6 +230,6 @@ const styles = StyleSheet.create({
     margin: 10,
     right: 5,
     bottom: statusbarHeight * 3,
-    backgroundColor : "#29B6F6"
+    backgroundColor : "#29B6F6",
   },
 });
